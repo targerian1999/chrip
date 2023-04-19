@@ -1,4 +1,4 @@
-import { SignInButton, useUser } from "@clerk/nextjs";
+import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import { type NextPage } from "next";
 
 import { api } from "y/utils/api";
@@ -36,13 +36,14 @@ const CreatePostWizard = () => {
 
     return (
         <div className="flex gap-3 w-full">
-            <Image
-                src={user.profileImageUrl}
-                alt="profile iamge"
-                className="w-14 h-14 rounded-full"
-                width="56"
-                height="56"
-            />
+            <UserButton appearance={{
+                elements: {
+                    userButtonAvatarBox: {
+                        width: 56,
+                        height: 56
+                    }
+                }
+            }} />
 
             <input
                 placeholder="Type some emojis!"
