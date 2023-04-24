@@ -6,6 +6,7 @@ import Image from "next/image";
 import { LoadingPage } from "y/components/loading";
 import { PostView } from "y/components/postview";
 import { generateSSGHelper } from "y/server/helpers/ssgHelper";
+import Error from "next/error";
 
 const ProfileFeed = (props: { userId: string }) => {
   const { data, isLoading } = api.posts.getPostsByUserId.useQuery({
@@ -24,7 +25,7 @@ const ProfileFeed = (props: { userId: string }) => {
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const { data } = api.profile.getUserByUsername.useQuery({ username })
 
-  if (!data || !data.username) return <div>404</div>
+  if (!data || !data.username) return <div><Error statusCode={404} /></div>
 
   return (
     <>
@@ -58,7 +59,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const slug = context.params?.slug
 
-  if (typeof slug !== "string") throw new Error("no slug");
+  if (typeof slug !== "string") {
+    return { notFound: true };
+  }
 
   const username = slug.replace("@", "");
 

@@ -4,11 +4,12 @@ import { api } from "y/utils/api";
 import { PageLayout } from "y/components/layout";
 import { PostView } from "y/components/postview";
 import { generateSSGHelper } from "y/server/helpers/ssgHelper";
+import Error from "next/error";
 
 const SinglePostPage: NextPage<{ id: string }> = ({ id }) => {
     const { data } = api.posts.getById.useQuery({ id })
 
-    if (!data) return <div>404</div>
+    if (!data) return <div><Error statusCode={404} /></div>
 
     return (
         <>
@@ -27,7 +28,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
     const id = context.params?.id
 
-    if (typeof id !== "string") throw new Error("no id");
+    if (typeof id !== "string") {
+        return { notFound: true };
+    }
 
     await ssg.posts.getById.prefetch({ id })
 
